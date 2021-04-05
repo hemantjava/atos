@@ -12,8 +12,15 @@ public class User {
     private String role;
     private String docStatus;
     private String assignedXML;
+    private String docType;
 
+    public String getDocType() {
+        return docType;
+    }
 
+    public void setDocType(String docType) {
+        this.docType = docType;
+    }
 
     public String getName() {
         return name;
@@ -55,12 +62,13 @@ public class User {
         this.assignedXML = assignedXML;
     }
     public User(){}
-    public User(String name, String status, String role, String docStatus, String assignedXML) {
+    public User(String name, String status, String role, String docStatus, String assignedXML,String docType) {
         this.name = name;
         this.status = status;
         this.role = role;
         this.docStatus = docStatus;
         this.assignedXML = assignedXML;
+        this.docType = docType;
     }
 
     @Override

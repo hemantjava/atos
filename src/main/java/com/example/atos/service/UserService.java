@@ -19,10 +19,10 @@ public class UserService {
     }
 
     static void init(){
-        userList.add( new User("Ramana","Online", "Agent","Assigned","879845.xml"));
-        userList.add(new User("Suhas", "Online","Agent","Assigned", "12345678.xml"));
-        userList.add(new User("Bhushan","Online","Agent","Not Assigned", ""));
-
+        userList.add( new User("Ramana","Online", "Agent","Assigned","879845.xml","Hazmat"));
+        userList.add(new User("Suhas", "Online","Agent","Assigned", "12345678.xml","Hazmat"));
+        userList.add(new User("Bhushan","Online","Agent","Not Assigned", "","Normal"));
+        userList.add(new User("Kanti","Online","Agent","Not Assigned", "","Hazmat"));
     }
 
 

@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/user")
@@ -17,7 +18,7 @@ public class UserController {
     private UserService userService;
 
     @GetMapping("/list")
-    public ResponseEntity<List<User>> getUser(){
+    public ResponseEntity<List<User>> getUser() {
         final List<User> users = userService.getUsers();
         return ResponseEntity.ok(users);
     }
@@ -25,21 +26,31 @@ public class UserController {
     @PutMapping("/update/{data}")
     public ResponseEntity<User> getAssignedUser(@PathVariable("data") String data) {
         final List<User> users = userService.getUsers();
-        final Optional<User> first = users.stream()
+        final List<User> userList = users.stream()
                 .filter(u -> u.getStatus().equalsIgnoreCase("Online"))
                 .filter(u -> u.getRole().equalsIgnoreCase("Agent"))
-                .filter(u -> u.getDocStatus().equalsIgnoreCase("Not Assigned")).findFirst();
+                .filter(u -> u.getDocStatus().equalsIgnoreCase("Not Assigned")).collect(Collectors.toList());
 
-        if (first.isPresent())
-        {
-            final User user = first.get();
-            user.setDocStatus("Assigned");
-            user.setAssignedXML(data);
-            return ResponseEntity.ok(user);
+        if (userList != null && !userList.isEmpty()) {
+            final Optional<User> hazmat = userList.stream().filter(user -> user.getDocType().equalsIgnoreCase("Hazmat")).findFirst();
+            if (hazmat.isPresent()) {
+                final User user = hazmat.get();
+                user.setDocStatus("Assigned");
+                user.setAssignedXML(data);
+                return ResponseEntity.ok(user);
+            } else {
+                final Optional<User> assigned = userList.stream().map(user -> {
+                    user.setDocStatus("Assigned");
+                    user.setAssignedXML(data);
+                    return user;
+                }).findFirst();
+                if (assigned.isPresent()) {
+                    return ResponseEntity.ok(assigned.get());
+                }
+            }
+
         }
-
         return ResponseEntity.notFound().build();
+
     }
-
-
 }
