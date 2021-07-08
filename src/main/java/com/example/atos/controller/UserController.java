@@ -22,6 +22,7 @@ public class UserController {
         //
         //
         final List<User> users = userService.getUsers();
+        //
         return ResponseEntity.ok(users);
     }
 
