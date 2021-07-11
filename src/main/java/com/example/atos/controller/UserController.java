@@ -6,7 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -30,16 +29,10 @@ public class UserController {
     @PutMapping("/update/{data}")
     public ResponseEntity<User> getAssignedUser(@PathVariable("data") String data) {
         final List<User> users = userService.getUsers();
-        final List<User> userList = new ArrayList<>();
-        for (User u : users) {
-            if (u.getStatus().equalsIgnoreCase("Online")) {
-                if (u.getRole().equalsIgnoreCase("Agent")) {
-                    if (u.getDocStatus().equalsIgnoreCase("Not Assigned")) {
-                        userList.add(u);
-                    }
-                }
-            }
-        }
+        final List<User> userList = users.stream()
+                .filter(u -> u.getStatus().equalsIgnoreCase("Online"))
+                .filter(u -> u.getRole().equalsIgnoreCase("Agent"))
+                .filter(u -> u.getDocStatus().equalsIgnoreCase("Not Assigned")).collect(Collectors.toList());
 
         if (userList != null && !userList.isEmpty()) {
             final Optional<User> hazmat = userList.stream().filter(user -> user.getDocType().equalsIgnoreCase("Hazmat")).findFirst();
